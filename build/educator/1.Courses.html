@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management - Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2ecc71;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: calc(100% - var(--sidebar-width));
+            right: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            background: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .nav-links li a.active {
+            background: #e8f8e5;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 80px 2rem 2rem;
+        }
+
+        .course-management {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-width: 150px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-create {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-create:hover {
+            background: #27ae60;
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .course-table th,
+        .course-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .course-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+
+        .badge-active {
+            background: #e8f8e5;
+            color: #27ae60;
+        }
+
+        .badge-draft {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .badge-upcoming {
+            background: #e0f7ff;
+            color: #3498db;
+        }
+
+        .badge-archived {
+            background: #f4f4f4;
+            color: #95a5a6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #e9ecef;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            padding: 0.5rem 0.75rem;
+            border-radius: 5px;
+            background: white;
+            color: #2c3e50;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .page-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-link:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-number {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .navbar {
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="search-bar">
+            <input type="search" placeholder="Search courses..." style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+        <div class="user-info">
+            <span class="notifications">🔔</span>
+            <div class="user-avatar">JL</div>
+            <span>Jenila L</span>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="logo">Educator Portal</div>
+        <ul class="nav-links">
+            <li><a href="educator-dash.html">Dashboard</a></li>
+            <li><a href="#" class="active">Courses</a></li>
+            <li><a href="2.assessments.html">Assessments</a></li>
+            <li><a href="3.students.html">Students</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="course-header">
+            <h1>My Courses</h1>
+            <a href="#" class="btn btn-create">Create New Course</a>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stats-card">
+                <div class="stats-number">8</div>
+                <div class="stats-label">Total Courses</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-number">5</div>
+                <div class="stats-label">Active Courses</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-number">2</div>
+                <div class="stats-label">Draft Courses</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-number">1</div>
+                <div class="stats-label">Archived Courses</div>
+            </div>
+        </div>
+
+        <div class="course-management">
+            <div class="filter-options">
+                <select class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="archived">Archived</option>
+                </select>
+                <select class="filter-select">
+                    <option value="all">All Categories</option>
+                    <option value="programming">Programming</option>
+                    <option value="data-science">Data Science</option>
+                    <option value="machine-learning">Machine Learning</option>
+                    <option value="design">Design</option>
+                </select>
+                <select class="filter-select">
+                    <option value="recent">Recently Updated</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="popular">Most Students</option>
+                    <option value="rating">Highest Rated</option>
+                </select>
+                <button class="btn btn-secondary">Apply Filters</button>
+            </div>
+
+            <table class="course-table">
+                <thead>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Category</th>
+                        <th>Students</th>
+                        <th>Last Updated</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Web Development Fundamentals</td>
+                        <td>Programming</td>
+                        <td>45</td>
+                        <td>Mar 29, 2025</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Advanced JavaScript</td>
+                        <td>Programming</td>
+                        <td>32</td>
+                        <td>Mar 27, 2025</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Data Science Essentials</td>
+                        <td>Data Science</td>
+                        <td>38</td>
+                        <td>Mar 30, 2025</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Machine Learning Fundamentals</td>
+                        <td>Machine Learning</td>
+                        <td>52</td>
+                        <td>Mar 26, 2025</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Deep Learning with Python</td>
+                        <td>Machine Learning</td>
+                        <td>28</td>
+                        <td>Mar 15, 2025</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mobile App Development</td>
+                        <td>Programming</td>
+                        <td>0</td>
+                        <td>Mar 28, 2025</td>
+                        <td><span class="badge badge-upcoming">Upcoming</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>UI/UX Design Principles</td>
+                        <td>Design</td>
+                        <td>0</td>
+                        <td>Mar 25, 2025</td>
+                        <td><span class="badge badge-draft">Draft</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">Preview</button>
+                            <button class="action-btn">Publish</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Web Design Basics</td>
+                        <td>Design</td>
+                        <td>0</td>
+                        <td>Mar 20, 2025</td>
+                        <td><span class="badge badge-draft">Draft</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">Preview</button>
+                            <button class="action-btn">Publish</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Python for Beginners</td>
+                        <td>Programming</td>
+                        <td>50</td>
+                        <td>Jan 10, 2025</td>
+                        <td><span class="badge badge-archived">Archived</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Duplicate</button>
+                            <button class="action-btn">Restore</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <a href="#" class="page-link">«</a>
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <a href="#" class="page-link">»</a>
+            </div>
+        </div>
+    </main>
+    <script src="1.courses.js"></script>
+</body>
+</html>

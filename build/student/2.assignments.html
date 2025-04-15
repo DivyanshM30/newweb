@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - Learning Platform</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body>
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <nav class="navbar">
+        <div class="search-bar">
+            <input type="search" id="searchInput" placeholder="Search assignments..." style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+        <div class="user-info">
+            <span class="notifications">🔔</span>
+            <div class="user-avatar">DM</div>
+            <span>Divyansh Mishra</span>
+        </div>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap logo-icon"></i>
+            <span>Learning Platform</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="student-dash.html"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
+            <li><a href="#" class="active"><i class="fas fa-tasks nav-icon"></i> Assignments</a></li>
+            <li><a href="3.exams.html">Exams</a></li>
+            <li><a href="5.certificates.html">Certificates</a></li>
+            <li><a href="6.settings.html">Settings</a></li>
+        </ul>
+        <button class="toggle-sidebar" id="toggleSidebar" aria-label="Toggle sidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Assignments</h2>
+            <div class="filter-options">
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="late">Late</option>
+                </select>
+                <select class="filter-select" id="sortFilter">
+                    <option value="date-asc">Due Date (Earliest)</option>
+                    <option value="date-desc">Due Date (Latest)</option>
+                    <option value="title-asc">Title (A-Z)</option>
+                    <option value="title-desc">Title (Z-A)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="assignment-list" id="assignmentList">
+            <!-- Assignment cards will be loaded via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Assignment Modal -->
+    <div class="modal" id="assignmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Assignment Details</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Assignment details will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="submitBtn">Submit Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer">
+        <!-- Toasts will be added dynamically -->
+    </div>
+
+    <script src="2.assignments.js"></script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard - Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #e74c3c;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: calc(100% - var(--sidebar-width));
+            right: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            background: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .nav-links li a.active {
+            background: #fde8e7;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 80px 2rem 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .job-posting {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-post {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-post:hover {
+            background: #c0392b;
+        }
+
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .candidate-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .candidate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .candidate-table th,
+        .candidate-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .candidate-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .skills-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #fde8e7;
+            color: var(--primary-color);
+            border-radius: 15px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .status-new {
+            background: #fde8e7;
+            color: var(--primary-color);
+        }
+
+        .status-interviewing {
+            background: #e8f8e5;
+            color: #27ae60;
+        }
+
+        .status-hired {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+
+        .certification-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .certification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .certification-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7f8c8d;
+            font-size: 0.875rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 60%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: modalopen 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {opacity: 0; transform: translateY(-60px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .skills-input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .skills-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .profile-modal-content {
+            max-width: 700px;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .profile-details h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .profile-tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .schedule-container {
+            margin-top: 1.5rem;
+        }
+
+        .schedule-form {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="search-bar">
+            <input type="search" placeholder="Search candidates..." style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+        <div class="user-info">
+            <span class="notifications">🔔</span>
+            <div class="user-avatar">TC</div>
+            <span>Tech Corp</span>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="logo">Employer Portal</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Dashboard</a></li>
+           
+            <li><a href="certifications.html">Certifications</a></li>
+            <li><a href="interviews.html">Interviews</a></li>
+           
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Active Job Posts</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">12</p>
+                <p>Currently active positions</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Total Applicants</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">156</p>
+                <p>Across all positions</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Hired This Month</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">8</p>
+                <p>Successful placements</p>
+            </div>
+        </div>
+
+        <div class="job-posting">
+            <div class="job-header">
+                <h2>Active Job Postings</h2>
+                <button id="openJobModal" class="btn-post">Post New Job</button>
+            </div>
+            <div class="job-grid" id="jobGrid">
+                <div class="job-card">
+                    <h3>Senior Full Stack Developer</h3>
+                    <p>Applications: 45</p>
+                    <div class="skills-tag">React</div>
+                    <div class="skills-tag">Node.js</div>
+                    <div class="skills-tag">MongoDB</div>
+                </div>
+                <div class="job-card">
+                    <h3>Data Scientist</h3>
+                    <p>Applications: 32</p>
+                    <div class="skills-tag">Python</div>
+                    <div class="skills-tag">Machine Learning</div>
+                    <div class="skills-tag">SQL</div>
+                </div>
+                <div class="job-card">
+                    <h3>UI/UX Designer</h3>
+                    <p>Applications: 28</p>
+                    <div class="skills-tag">Figma</div>
+                    <div class="skills-tag">Adobe XD</div>
+                    <div class="skills-tag">Prototyping</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="candidate-list">
+            <h2>Top Candidates</h2>
+            <table class="candidate-table">
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Position</th>
+                        <th>Skills</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="candidateTableBody">
+                    <tr>
+                        <td>Sarah Johnson</td>
+                        <td>Senior Full Stack Developer</td>
+                        <td>
+                            <div class="skills-tag">React</div>
+                            <div class="skills-tag">Node.js</div>
+                        </td>
+                        <td><span class="status-badge status-interviewing">Interviewing</span></td>
+                        <td class="action-buttons">
+                            <button class="btn-view btn-primary view-profile" data-candidate="Sarah Johnson" data-position="Senior Full Stack Developer" data-skills="React,Node.js" data-status="Interviewing">View Profile</button>
+                            <button class="btn-view btn-secondary schedule-interview" data-candidate="Sarah Johnson">Schedule</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Michael Chen</td>
+                        <td>Data Scientist</td>
+                        <td>
+                            <div class="skills-tag">Python</div>
+                            <div class="skills-tag">ML</div>
+                        </td>
+                        <td><span class="status-badge status-new">New</span></td>
+                        <td class="action-buttons">
+                            <button class="btn-view btn-primary view-profile" data-candidate="Michael Chen" data-position="Data Scientist" data-skills="Python,ML" data-status="New">View Profile</button>
+                            <button class="btn-view btn-secondary schedule-interview" data-candidate="Michael Chen">Schedule</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+        <!-- Job Posting Modal -->
+        <div id="jobModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Post New Job</h2>
+                <form id="newJobForm">
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title</label>
+                        <input type="text" id="jobTitle" name="jobTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applications">Number of Applications (Initial)</label>
+                        <input type="number" id="applications" name="applications" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="skillInput">Skills Required</label>
+                        <div class="skills-input-container">
+                            <input type="text" id="skillInput" placeholder="Add a skill">
+                            <button type="button" id="addSkill" class="btn-post">Add</button>
+                        </div>
+                        <div id="skillsDisplay" class="skills-display"></div>
+                    </div>
+                    <button type="submit" class="btn-post">Create Job Posting</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profileModal" class="modal">
+            <div class="modal-content profile-modal-content">
+                <span class="close profile-close">&times;</span>
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">SJ</div>
+                    <div class="profile-details">
+                        <h2 id="candidateName">Sarah Johnson</h2>
+                        <p id="candidatePosition">Senior Full Stack Developer</p>
+                        <div id="candidateSkills">
+                            <div class="skills-tag">React</div>
+                            <div class="skills-tag">Node.js</div>
+                        </div>
+                        <p>Status: <span id="candidateStatus" class="status-badge status-interviewing">Interviewing</span></p>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <div class="profile-tab active" data-tab="resume">Resume</div>
+                    <div class="profile-tab" data-tab="experience">Experience</div>
+                    <div class="profile-tab" data-tab="certifications">Certifications</div>
+                    <div class="profile-tab" data-tab="schedule">Schedule Interview</div>
+                </div>
+
+                <div id="resumeTab" class="tab-content active">
+                    <h3>Resume</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros at magna pulvinar tincidunt. Vivamus fringilla, nisl eget ultricies interdum, leo eros vehicula urna, eget condimentum nisl nisi vel justo.</p>
+                    <p>Sed auctor, magna eu ultricies elementum, urna risus luctus velit, in eleifend metus quam vel lectus. Suspendisse potenti. Nullam fringilla, nulla eu tincidunt convallis, lorem enim convallis orci, vel viverra libero magna sit amet urna.</p>
+                </div>
+
+                <div id="experienceTab" class="tab-content">
+                    <h3>Work Experience</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <h4>Senior Developer - Tech Solutions</h4>
+                        <p>2020 - Present</p>
+                        <p>Led development team for enterprise web applications. Implemented microservices architecture and improved application performance by 40%.</p>
+                    </div>
+                    <div>
+                        <h4>Full Stack Developer - Digital Innovations</h4>
+                        <p>2017 - 2020</p>
+                        <p>Developed and maintained multiple web applications for clients across finance and healthcare sectors.</p>
+                    </div>
+                </div>
+
+                <div id="certificationsTab" class="tab-content">
+                    <h3>Certifications</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <h4>AWS Certified Solutions Architect</h4>
+                        <p>Issued: January 2023</p>
+                    </div>
+                    <div>
+                        <h4>React Advanced Developer</h4>
+                        <p>Issued: July 2022</p>
+                    </div>
+                </div>
+
+                <div id="scheduleTab" class="tab-content">
+                    <h3>Schedule Interview</h3>
+                    <div class="schedule-container">
+                        <form id="scheduleForm" class="schedule-form">
+                            <div class="form-group">
+                                <label for="interviewDate">Date</label>
+                                <input type="date" id="interviewDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="interviewTime">Time</label>
+                                <input type="time" id="interviewTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="interviewType">Interview Type</label>
+                                <select id="interviewType" required>
+                                    <option value="phone">Phone</option>
+                                    <option value="video">Video Conference</option>
+                                    <option value="inperson">In Person</option>
+                                    <option value="technical">Technical Assessment</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="interviewNotes">Notes</label>
+                                <textarea id="interviewNotes" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn-post">Schedule Interview</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+      
+        
+       
+        <script>
+            // Job Modal Functionality
+            const jobModal = document.getElementById('jobModal');
+            const openJobModalBtn = document.getElementById('openJobModal');
+            const closeJobModalBtn = document.querySelector('.close');
+            const newJobForm = document.getElementById('newJobForm');
+            const jobGrid = document.getElementById('jobGrid');
+            const skillInput = document.getElementById('skillInput');
+            const addSkillBtn = document.getElementById('addSkill');
+            const skillsDisplay = document.getElementById('skillsDisplay');
+
+            // Store skills for the new job
+            let jobSkills = [];
+
+            // Open job modal
+            openJobModalBtn.addEventListener('click', () => {
+                jobModal.style.display = 'block';
+                // Reset form
+                newJobForm.reset();
+                jobSkills = [];
+                skillsDisplay.innerHTML = '';
+            });
+
+            // Close job modal
+            closeJobModalBtn.addEventListener('click', () => {
+                jobModal.style.display = 'none';
+            });
+
+            // Add skill to the list
+            addSkillBtn.addEventListener('click', () => {
+                const skill = skillInput.value.trim();
+                if (skill && !jobSkills.includes(skill)) {
+                    jobSkills.push(skill);
+                    updateSkillsDisplay();
+                    skillInput.value = '';
+                }
+            });
+
+            // Enter key to add skill
+            skillInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSkillBtn.click();
+                }
+            });
+
+            // Update skills display
+            function updateSkillsDisplay() {
+                skillsDisplay.innerHTML = '';
+                jobSkills.forEach(skill => {
+                    const skillTag = document.createElement('div');
+                    skillTag.className = 'skills-tag';
+                    skillTag.textContent = skill;
+                    
+                    // Add remove capability
+                    skillTag.addEventListener('click', () => {
+                        jobSkills = jobSkills.filter(s => s !== skill);
+                        updateSkillsDisplay();
+                    });
+                    
+                    skillsDisplay.appendChild(skillTag);
+                });
+            }
+
+            // Submit new job form
+            newJobForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const jobTitle = document.getElementById('jobTitle').value;
+                const applications = document.getElementById('applications').value;
+                
+                // Create new job card
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                
+                jobCard.innerHTML = `
+                    <h3>${jobTitle}</h3>
+                    <p>Applications: ${applications}</p>
+                    ${jobSkills.map(skill => `<div class="skills-tag">${skill}</div>`).join('')}
+                `;
+                
+                // Add to job grid
+                jobGrid.appendChild(jobCard);
+                
+                // Close modal
+                jobModal.style.display = 'none';
+            });
+
+            // Profile Modal Functionality
+            const profileModal = document.getElementById('profileModal');
+            const profileCloseBtn = document.querySelector('.profile-close');
+            const viewProfileBtns = document.querySelectorAll('.view-profile');
+            const scheduleInterviewBtns = document.querySelectorAll('.schedule-interview');
+            const profileTabs = document.querySelectorAll('.profile-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const scheduleForm = document.getElementById('scheduleForm');
+
+            // Open profile modal
+            viewProfileBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const candidate = btn.getAttribute('data-candidate');
+                    const position = btn.getAttribute('data-position');
+                    const skills = btn.getAttribute('data-skills').split(',');
+                    const status = btn.getAttribute('data-status');
+                    
+                    // Update profile modal with candidate data
+                    document.getElementById('candidateName').textContent = candidate;
+                    document.getElementById('candidatePosition').textContent = position;
+                    document.getElementById('profileAvatar').textContent = getInitials(candidate);
+                    
+                    // Update skills
+                    const skillsContainer = document.getElementById('candidateSkills');
+                    skillsContainer.innerHTML = '';
+                    skills.forEach(skill => {
+                        const skillTag = document.createElement('div');
+                        skillTag.className = 'skills-tag';
+                        skillTag.textContent = skill;
+                        skillsContainer.appendChild(skillTag);
+                    });
+                    
+                    // Update status
+                    const statusBadge = document.getElementById('candidateStatus');
+                    statusBadge.textContent = status;
+                    statusBadge.className = `status-badge status-${status.toLowerCase()}`;
+                    
+                    // Reset to first tab
+                    profileTabs[0].click();
+                    
+                    // Show modal
+                    profileModal.style.display = 'block';
+                });
+            });
+
+            // Schedule interview button - open profile modal and go to schedule tab
+            scheduleInterviewBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const candidate = btn.getAttribute('data-candidate');
+                    
+                    // Find and click the corresponding view profile button first
+                    const viewProfileBtn = document.querySelector(`.view-profile[data-candidate="${candidate}"]`);
+                    viewProfileBtn.click();
+                    
+                    // Then switch to schedule tab
+                    profileTabs.forEach(tab => {
+                        if (tab.getAttribute('data-tab') === 'schedule') {
+                            tab.click();
+                        }
+                    });
+                });
+            });
+
+            // Close profile modal
+            profileCloseBtn.addEventListener('click', () => {
+                profileModal.style.display = 'none';
+            });
+
+            // Tab functionality
+            profileTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    profileTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show selected tab content
+                    const tabName = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabName}Tab`).classList.add('active');
+                });
+            });
+
+            // Submit schedule form
+            scheduleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const date = document.getElementById('interviewDate').value;
+                const time = document.getElementById('interviewTime').value;
+                const type = document.getElementById('interviewType').value;
+                const notes = document.getElementById('interviewNotes').value;
+                
+                // Here you would typically send this data to your server
+                // For now, just show an alert
+                alert(`Interview scheduled for ${document.getElementById('candidateName').textContent} on ${date} at ${time}`);
+                
+                // Close modal
+                profileModal.style.display = 'none';
+            });
+
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === jobModal) {
+                    jobModal.style.display = 'none';
+                } else if (e.target === profileModal) {
+                    profileModal.style.display = 'none';
+                }
+            });
+
+            // Helper function to get initials from name
+            function getInitials(name) {
+                return name.split(' ').map(n => n[0]).join('');
+            }
+
+            // Dynamically add event listeners to any new view profile buttons
+            function addProfileButtonListeners() {
+                document.querySelectorAll('.view-profile').forEach(btn => {
+                    if (!btn.hasListener) {
+                        btn.addEventListener('click', function() {
+                            const candidate = this.getAttribute('data-candidate');
+                            const position = this.getAttribute('data-position');
+                            const skills = this.getAttribute('data-skills').split(',');
+                            const status = this.getAttribute('data-status');
+                            
+                            // Update profile modal
+                            // (same code as above...)
+                            
+                            profileModal.style.display = 'block';
+                        });
+                        btn.hasListener = true;
+                    }
+                });
+            }
+           
+
+        </script>
+    </main>
+</body>
+</html>

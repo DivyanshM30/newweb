@@ -1,4 +1,3 @@
-
 {
   "homepage": "https://divyanshm30.github.io/newweb",
   "name": "app",
@@ -12,7 +11,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.4.1",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -43,7 +42,6 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
-    "webpack": "^5.99.5",
     "webpack-cli": "^6.0.1"
   }
 }

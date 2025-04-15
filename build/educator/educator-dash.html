@@ -1,0 +1,320 @@
+<!-- educator-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educator Dashboard - Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2ecc71;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: calc(100% - var(--sidebar-width));
+            right: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            background: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .nav-links li a.active {
+            background: #e8f8e5;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 80px 2rem 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .course-management {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-create {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-create:hover {
+            background: #27ae60;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .course-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .student-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .badge-active {
+            background: #e8f8e5;
+            color: #27ae60;
+        }
+
+        .badge-pending {
+            background: #fff3e0;
+            color: #f39c12;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .navbar {
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="search-bar">
+            <input type="search" placeholder="Search courses..." style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+        <div class="user-info">
+            <span class="notifications">🔔</span>
+            <div class="user-avatar">JL</div>
+            <span>Jenila L</span>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="logo">Educator Portal</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Dashboard</a></li>
+            <li><a href="1.Courses.html">Courses</a></li>
+            <li><a href="2.assessments.html">Assessments</a></li>
+            <li><a href="3.students.html">Students</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Active Courses</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">8</p>
+                <p>Total active courses</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Total Students</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">245</p>
+                <p>Enrolled students</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Average Rating</h3>
+                <p style="font-size: 2rem; color: var(--primary-color);">4.8</p>
+                <p>Based on student feedback</p>
+            </div>
+        </div>
+
+        <div class="course-management">
+            <div class="course-header">
+                <h2>Course Management</h2>
+            </div>
+            <div class="course-grid">
+                <div class="course-card">
+                    <h3>Web Development</h3>
+                    <p>Students: 45</p>
+                    <p>Last updated: 2 days ago</p>
+                </div>
+                <div class="course-card">
+                    <h3>Data Science</h3>
+                    <p>Students: 38</p>
+                    <p>Last updated: 1 day ago</p>
+                </div>
+                <div class="course-card">
+                    <h3>Machine Learning</h3>
+                    <p>Students: 52</p>
+                    <p>Last updated: 5 days ago</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="student-list">
+            <h2>Recent Student Activities</h2>
+            <table class="student-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Web Development</td>
+                        <td>75%</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Data Science</td>
+                        <td>60%</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>Mike Johnson</td>
+                        <td>Machine Learning</td>
+                        <td>45%</td>
+                        <td><span class="badge badge-pending">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

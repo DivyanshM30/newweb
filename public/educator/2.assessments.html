@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments - Educator Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2ecc71;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: calc(100% - var(--sidebar-width));
+            right: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            background: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .nav-links li a.active {
+            background: #e8f8e5;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 80px 2rem 2rem;
+        }
+
+        .assessment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-create {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-create:hover {
+            background: #27ae60;
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-section select, .filter-section input {
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex-grow: 1;
+        }
+        
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .assessment-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .assessment-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .assessment-type {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        
+        .type-quiz {
+            background: #e8f8e5;
+            color: #27ae60;
+        }
+        
+        .type-assignment {
+            background: #e1f5fe;
+            color: #03a9f4;
+        }
+        
+        .type-exam {
+            background: #fff3e0;
+            color: #f39c12;
+        }
+        
+        .assessment-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-edit {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-view {
+            background: #e8f8e5;
+            color: var(--primary-color);
+            border: 1px solid #d1e7dd;
+        }
+        
+        .upcoming-assessments {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .assessment-table th,
+        .assessment-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .assessment-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        
+        .badge-scheduled {
+            background: #e1f5fe;
+            color: #03a9f4;
+        }
+        
+        .badge-active {
+            background: #e8f8e5;
+            color: #27ae60;
+        }
+        
+        .badge-completed {
+            background: #f8f9fa;
+            color: #7f8c8d;
+        }
+        
+        .progress-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-color) 0% var(--progress), #f0f2f5 var(--progress) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .progress-circle::before {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .progress-text {
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .navbar {
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="search-bar">
+            <input type="search" placeholder="Search assessments..." style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+        <div class="user-info">
+            <span class="notifications">🔔</span>
+            <div class="user-avatar">JL</div>
+            <span>Jenila L</span>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="logo">Educator Portal</div>
+        <ul class="nav-links">
+            <li><a href="educator-dash.html">Dashboard</a></li>
+            <li><a href="1.Courses.html">Courses</a></li>
+            <li><a href="#" class="active">Assessments</a></li>
+            <li><a href="3.students.html">Students</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="assessment-header">
+            <h1>Assessments</h1>
+            <button class="btn-create">+ Create Assessment</button>
+        </div>
+        
+        <div class="filter-section">
+            <select>
+                <option value="">All Courses</option>
+                <option value="web-development">Web Development</option>
+                <option value="data-science">Data Science</option>
+                <option value="machine-learning">Machine Learning</option>
+            </select>
+            <select>
+                <option value="">All Types</option>
+                <option value="quiz">Quiz</option>
+                <option value="assignment">Assignment</option>
+                <option value="exam">Exam</option>
+            </select>
+            <select>
+                <option value="">All Status</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+        
+        <div class="assessment-grid">
+            <div class="assessment-card">
+                <div class="assessment-card-header">
+                    <h3>CSS Layout Challenge</h3>
+                    <span class="assessment-type type-assignment">Assignment</span>
+                </div>
+                <p>Web Development</p>
+                <p>Due: April 15, 2025</p>
+                <p>Submissions: 28/45</p>
+                <div class="assessment-actions">
+                    <button class="btn-action btn-edit">Edit</button>
+                    <button class="btn-action btn-view">View Submissions</button>
+                </div>
+            </div>
+            
+            <div class="assessment-card">
+                <div class="assessment-card-header">
+                    <h3>JavaScript Fundamentals</h3>
+                    <span class="assessment-type type-quiz">Quiz</span>
+                </div>
+                <p>Web Development</p>
+                <p>Due: April 10, 2025</p>
+                <p>Submissions: 42/45</p>
+                <div class="assessment-actions">
+                    <button class="btn-action btn-edit">Edit</button>
+                    <button class="btn-action btn-view">View Submissions</button>
+                </div>
+            </div>
+            
+            <div class="assessment-card">
+                <div class="assessment-card-header">
+                    <h3>Data Visualization Project</h3>
+                    <span class="assessment-type type-assignment">Assignment</span>
+                </div>
+                <p>Data Science</p>
+                <p>Due: April 20, 2025</p>
+                <p>Submissions: 15/38</p>
+                <div class="assessment-actions">
+                    <button class="btn-action btn-edit">Edit</button>
+                    <button class="btn-action btn-view">View Submissions</button>
+                </div>
+            </div>
+            
+            <div class="assessment-card">
+                <div class="assessment-card-header">
+                    <h3>Neural Networks</h3>
+                    <span class="assessment-type type-exam">Exam</span>
+                </div>
+                <p>Machine Learning</p>
+                <p>Scheduled: April 25, 2025</p>
+                <p>Status: Upcoming</p>
+                <div class="assessment-actions">
+                    <button class="btn-action btn-edit">Edit</button>
+                    <button class="btn-action btn-view">Preview</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="upcoming-assessments">
+            <h2>Assessment Schedule</h2>
+            <table class="assessment-table">
+                <thead>
+                    <tr>
+                        <th>Assessment</th>
+                        <th>Course</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>JavaScript Fundamentals</td>
+                        <td>Web Development</td>
+                        <td><span class="assessment-type type-quiz">Quiz</span></td>
+                        <td>April 10, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 93%">
+                                <span class="progress-text">93%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CSS Layout Challenge</td>
+                        <td>Web Development</td>
+                        <td><span class="assessment-type type-assignment">Assignment</span></td>
+                        <td>April 15, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 62%">
+                                <span class="progress-text">62%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Python Data Analysis</td>
+                        <td>Data Science</td>
+                        <td><span class="assessment-type type-quiz">Quiz</span></td>
+                        <td>April 18, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 0%">
+                                <span class="progress-text">0%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-scheduled">Scheduled</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Data Visualization Project</td>
+                        <td>Data Science</td>
+                        <td><span class="assessment-type type-assignment">Assignment</span></td>
+                        <td>April 20, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 39%">
+                                <span class="progress-text">39%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Neural Networks</td>
+                        <td>Machine Learning</td>
+                        <td><span class="assessment-type type-exam">Exam</span></td>
+                        <td>April 25, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 0%">
+                                <span class="progress-text">0%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-scheduled">Scheduled</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>HTML Basics</td>
+                        <td>Web Development</td>
+                        <td><span class="assessment-type type-quiz">Quiz</span></td>
+                        <td>March 28, 2025</td>
+                        <td>
+                            <div class="progress-circle" style="--progress: 100%">
+                                <span class="progress-text">100%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-completed">Completed</span></td>
+                        <td>
+                            <button class="btn-action btn-view">View</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="2.assessments.js"></script>
+</body>
+</html>
